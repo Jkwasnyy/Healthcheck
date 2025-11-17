@@ -8,7 +8,7 @@ interface Body {
   height: number;
 }
 
-const BodyDetailsPage = () => {
+const BodyDetailsTemplate = () => {
   const {
     gender,
     weight: globalWeight,
@@ -69,4 +69,4 @@ const BodyDetailsPage = () => {
   );
 };
 
-export default BodyDetailsPage;
+export default BodyDetailsTemplate;
