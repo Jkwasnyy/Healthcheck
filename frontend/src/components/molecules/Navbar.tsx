@@ -1,10 +1,11 @@
 import { ProgressBar, Container } from "../atoms";
+import { useAppSelector } from "../../store/hooks";
 
 type handleProgressBar = () => number;
 type handleTextHeader = () => string;
 
 const Navbar = () => {
-  const store = 0;
+  const store = useAppSelector((store) => store.counter.value);
 
   const handleProgressBar: handleProgressBar = () => {
     return store * 20;

@@ -1,13 +1,14 @@
 import { Navbar, Footer } from "./components/molecules";
-import { Main, Container } from "./components/atoms";
+import { useAppSelector } from "./store/hooks";
+import { GenderTemplate } from "./components/templates";
 
 const App = () => {
+  const count = useAppSelector((state) => state.counter.value);
+
   return (
     <>
       <Navbar />
-      <Main>
-        <Container className="text-center">Main content</Container>
-      </Main>
+      {count == 0 && <GenderTemplate />}
       <Footer />
     </>
   );
