@@ -4,6 +4,7 @@ import {
   GenderTemplate,
   BodyDetailsTemplate,
   BmiTemplate,
+  IlnessTemplate,
 } from "./components/templates";
 
 const App = () => {
@@ -15,6 +16,7 @@ const App = () => {
       {count == 0 && <GenderTemplate />}
       {count == 1 && <BodyDetailsTemplate />}
       {count == 2 && <BmiTemplate />}
+      {count == 3 && <IlnessTemplate />}
       <Footer />
     </>
   );
