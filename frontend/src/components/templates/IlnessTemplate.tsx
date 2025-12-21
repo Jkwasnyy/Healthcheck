@@ -4,12 +4,7 @@ import { useAppDispatch } from "../../store/hooks";
 import { setIlness as setGlobalIlness } from "../../store/userSlice";
 import { twMerge } from "tailwind-merge";
 
-const ilnesses: string[] = [
-  "diabetes",
-  "obesity",
-  "atherosclerosis",
-  "hypertension",
-];
+const ilnesses: string[] = ["diabetes"];
 
 const IlnessTemplate = () => {
   const [ilness, setIlness] = useState<string>(ilnesses[0]);
