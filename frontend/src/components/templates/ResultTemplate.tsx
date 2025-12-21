@@ -22,13 +22,16 @@ const ResultTemplate = ({ values }: Props) => {
       setError(null);
 
       try {
-        const res = await fetch("http://localhost:8000/predict", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+        const res = await fetch(
+          "https://healthcheck-fd1a.onrender.com/predict",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(values),
           },
-          body: JSON.stringify(values),
-        });
+        );
 
         if (!res.ok) {
           throw new Error("API Error");
