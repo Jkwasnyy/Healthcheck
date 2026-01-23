@@ -7,14 +7,12 @@ interface UserState {
   gender: Gender;
   weight: number;
   height: number;
-  ilness: string;
 }
 
 const initialState: UserState = {
   gender: "female",
   weight: 30,
   height: 100,
-  ilness: "",
 };
 
 const userSlice = createSlice({
@@ -28,11 +26,8 @@ const userSlice = createSlice({
       state.weight = action.payload.weight;
       state.height = action.payload.height;
     },
-    setIlness(state, action: PayloadAction<string>) {
-      state.ilness = action.payload;
-    },
   },
 });
 
-export const { setGender, setBody, setIlness } = userSlice.actions;
+export const { setGender, setBody } = userSlice.actions;
 export default userSlice.reducer;

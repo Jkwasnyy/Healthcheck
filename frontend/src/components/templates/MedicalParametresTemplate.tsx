@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
 import { Main, ProgressBtn } from "../atoms/index";
-import { useAppSelector } from "../../store/hooks";
-
-type Ilness = "diabetes" | "obesity" | "atherosclerosis" | "hypertension";
 
 type Field = {
   name: string;
@@ -12,62 +9,28 @@ type Field = {
   max?: number;
 };
 
-const ilnessParametres: Record<Ilness, { fields: Field[] }> = {
-  diabetes: {
-    fields: [
-      { name: "Pregnancies", unit: "number", type: "number", min: 0, max: 17 },
-      { name: "Glucose", unit: "mg/dL", type: "number", min: 50, max: 200 },
-      {
-        name: "BloodPressure",
-        unit: "mmHg",
-        type: "number",
-        min: 40,
-        max: 122,
-      },
-      { name: "SkinThickness", unit: "mm", type: "number", min: 7, max: 99 },
-      { name: "Insulin", unit: "µU/mL", type: "number", min: 0, max: 900 },
-      { name: "BMI", unit: "kg/m²", type: "number", min: 15, max: 70 },
-      {
-        name: "DiabetesPedigreeFunction",
-        unit: "number",
-        type: "number",
-        min: 0,
-        max: 2.5,
-      },
-      { name: "Age", unit: "years", type: "number", min: 16, max: 90 },
-    ],
+const medicalFields: Field[] = [
+  { name: "Pregnancies", unit: "number", type: "number", min: 0, max: 17 },
+  { name: "Glucose", unit: "mg/dL", type: "number", min: 50, max: 200 },
+  {
+    name: "BloodPressure",
+    unit: "mmHg",
+    type: "number",
+    min: 40,
+    max: 122,
   },
-  obesity: {
-    fields: [
-      { name: "bmi", unit: "kg/m²", type: "number", min: 10, max: 60 },
-      {
-        name: "waist_circumference",
-        unit: "cm",
-        type: "number",
-        min: 40,
-        max: 200,
-      },
-      { name: "age", unit: "years", type: "number", min: 0, max: 120 },
-    ],
+  { name: "SkinThickness", unit: "mm", type: "number", min: 7, max: 99 },
+  { name: "Insulin", unit: "µU/mL", type: "number", min: 0, max: 900 },
+  { name: "BMI", unit: "kg/m²", type: "number", min: 15, max: 70 },
+  {
+    name: "DiabetesPedigreeFunction",
+    unit: "number",
+    type: "number",
+    min: 0,
+    max: 2.5,
   },
-  atherosclerosis: {
-    fields: [
-      { name: "ldl", unit: "mg/dL", type: "number", min: 50, max: 300 },
-      { name: "hdl", unit: "mg/dL", type: "number", min: 20, max: 100 },
-      { name: "sbp", unit: "mmHg", type: "number", min: 80, max: 250 },
-      { name: "age", unit: "years", type: "number", min: 0, max: 120 },
-      { name: "smoking", unit: "", type: "checkbox" },
-    ],
-  },
-  hypertension: {
-    fields: [
-      { name: "sbp", unit: "mmHg", type: "number", min: 80, max: 250 },
-      { name: "dbp", unit: "mmHg", type: "number", min: 50, max: 150 },
-      { name: "bmi", unit: "kg/m²", type: "number", min: 10, max: 60 },
-      { name: "age", unit: "years", type: "number", min: 0, max: 120 },
-    ],
-  },
-};
+  { name: "Age", unit: "years", type: "number", min: 16, max: 90 },
+];
 
 type Props = {
   setValues: React.Dispatch<
@@ -76,9 +39,6 @@ type Props = {
 };
 
 const MedicalParametresTemplate = ({ setValues }: Props) => {
-  const ilness = useAppSelector((state) => state.user.ilness) as Ilness;
-  const fields = ilnessParametres[ilness]?.fields ?? [];
-
   const [temp, setTemp] = useState<Record<string, string | number | boolean>>(
     {},
   );
@@ -86,15 +46,15 @@ const MedicalParametresTemplate = ({ setValues }: Props) => {
   useEffect(() => {
     const defaults: Record<string, string | number | boolean> = {};
 
-    fields.forEach((f) => {
+    medicalFields.forEach((f) => {
       defaults[f.name] = f.type === "number" ? Number(f.min) : false;
     });
 
     setTemp(defaults);
-  }, [ilness]);
+  }, []);
 
   const handleNumberChange = (index: number, name: string, value: number) => {
-    const field = fields[index];
+    const field = medicalFields[index];
 
     if (Number.isNaN(value)) {
       setTemp((prev) => ({
@@ -137,10 +97,10 @@ const MedicalParametresTemplate = ({ setValues }: Props) => {
   return (
     <Main className="flex flex-col items-center text-sm lg:text-base">
       <h2 className="text-base font-semibold lg:text-lg">
-        Add <span className="text-sky-500">{ilness}</span> parameters
+        Add your <span className="text-sky-500">medical parameters</span>
       </h2>
       <section className="my-8 w-full max-w-sm space-y-2">
-        {fields.map((p, i: number) => {
+        {medicalFields.map((p, i: number) => {
           const current = temp[p.name];
           return (
             <div
@@ -152,7 +112,7 @@ const MedicalParametresTemplate = ({ setValues }: Props) => {
                 <input
                   type="number"
                   className="w-24 text-center outline-none"
-                  value={Number(current)}
+                  value={current !== undefined && current !== "" ? Number(current) : ""}
                   onChange={(e) =>
                     handleNumberChange(i, p.name, e.target.valueAsNumber)
                   }

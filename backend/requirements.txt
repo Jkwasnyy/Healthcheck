@@ -3,3 +3,5 @@ pydantic
 uvicorn
 pandas
 scikit-learn
+bcrypt
+python-dotenv

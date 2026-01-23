@@ -4,7 +4,6 @@ import {
   GenderTemplate,
   BodyDetailsTemplate,
   BmiTemplate,
-  IlnessTemplate,
   MedicalParametresTemplate,
   ResultTemplate,
 } from "./components/templates";
@@ -22,9 +21,8 @@ const App = () => {
       {count === 0 && <GenderTemplate />}
       {count === 1 && <BodyDetailsTemplate />}
       {count === 2 && <BmiTemplate />}
-      {count === 3 && <IlnessTemplate />}
-      {count === 4 && <MedicalParametresTemplate setValues={setMedical} />}
-      {count === 5 && <ResultTemplate values={medical} />}
+      {count === 3 && <MedicalParametresTemplate setValues={setMedical} />}
+      {count === 4 && <ResultTemplate values={medical} />}
       <Footer />
     </>
   );
