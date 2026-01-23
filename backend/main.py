@@ -56,6 +56,27 @@ FEATURE_INFO = {
     "Age": {"name": "Age (years)", "min": 0, "max": 120}
 }
 
+# medical advice
+MEDICAL_UI_ADVICE = {
+    "Diabetes": {
+        "małe": {"title": "Low diabetes risk", "short": "Your diabetes risk is currently low.", "details": "Maintaining a healthy lifestyle helps prevent future risk."},
+        "umiarkowane": {"title": "Moderate diabetes risk", "short": "Blood sugar levels suggest increased diabetes risk.", "details": "Monitor glucose levels and reduce sugar intake."},
+        "spore": {"title": "High diabetes risk", "short": "High risk of developing type 2 diabetes.", "details": "Medical consultation is strongly recommended."}
+    },
+    "Obesity": {
+        "umiarkowane": {"title": "Obesity detected", "short": "Your BMI indicates obesity.", "details": "Lifestyle changes can significantly improve health."},
+        "spore": {"title": "Severe obesity", "short": "Obesity significantly increases health risks.", "details": "Professional medical consultation is advised."}
+    },
+    "Hypertension": {
+        "umiarkowane": {"title": "Elevated blood pressure", "short": "Blood pressure above normal range.", "details": "Reduce salt intake and manage stress."},
+        "spore": {"title": "High blood pressure", "short": "Blood pressure is dangerously high.", "details": "Medical evaluation is recommended."}
+    },
+    "Metabolic Syndrome": {
+        "umiarkowane": {"title": "Metabolic risk detected", "short": "Multiple metabolic risk factors present.", "details": "Lifestyle modification is recommended."},
+        "spore": {"title": "High metabolic risk", "short": "High risk of metabolic complications.", "details": "Consult a healthcare professional."}
+    }
+}
+
 # input data model
 class PatientData(BaseModel):
     Pregnancies: int
@@ -164,6 +185,27 @@ def analyze_health(patient_dict):
     
     return diseases
 
+def generate_ui_advice(diseases_detected, diabetes_risk):
+    ui = []
+
+    # diabetes advice
+    diab_dict = MEDICAL_UI_ADVICE.get("Diabetes", {})
+    diab = diab_dict.get(diabetes_risk)
+    if diab:
+        ui.append({"key": "Diabetes", "risk_level": diabetes_risk, **diab})
+
+    # other diseases advice
+    for d, info in diseases_detected.items():
+        disease_dict = MEDICAL_UI_ADVICE.get(d)
+        if not disease_dict:
+            continue
+        advice = disease_dict.get(info["risk_level"])
+        if not advice:
+            continue
+        ui.append({"key": d, "risk_level": info["risk_level"], **advice})
+
+    return ui
+
 
 # endpoint
 @app.post("/predict")
@@ -200,7 +242,6 @@ def predict(data: PatientData):
         "diseases_detected": significant_diseases,
         "raport": generate_medical_report(patient_dict)
     }
-
 
 # AUTHENTICATION ENDPOINTS
 
@@ -245,8 +286,44 @@ def save_result(data: SaveResultRequest):
 
 @app.get("/patient/{patient_id}/results")
 def get_results(patient_id: int):
-    result = get_patient_results(patient_id)
-    return result
+    results = get_patient_results(patient_id) or []
+
+    enriched_results = []
+
+    for r in results:
+        # retrieve analysis data
+        result_data = r.get("result", {})
+        diabetes = result_data.get("diabetes", {})
+        diseases = result_data.get("diseases_detected", {})
+
+        ui_advice = []
+
+        # diabetes advice
+        diabetes_risk = diabetes.get("risk_level")
+        if diabetes_risk:
+            diab_dict = MEDICAL_UI_ADVICE.get("Diabetes", {})
+            diab = diab_dict.get(diabetes_risk)
+            if diab:
+                ui_advice.append({"key": "Diabetes", "risk_level": diabetes_risk, **diab})
+
+        # other diseases advice
+        for d, info in diseases.items():
+            disease_dict = MEDICAL_UI_ADVICE.get(d)
+            if not disease_dict:
+                continue
+            advice = disease_dict.get(info.get("risk_level"))
+            if not advice:
+                continue
+            ui_advice.append({"key": d, "risk_level": info.get("risk_level"), **advice})
+
+        enriched_results.append({
+            **r,
+            "ui_advice": ui_advice,
+            "disclaimer": "Educational information only. Not a medical diagnosis."
+        })
+
+    return enriched_results
+
 
 # health check
 @app.get("/")
