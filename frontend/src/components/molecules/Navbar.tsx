@@ -1,4 +1,4 @@
-import { ProgressBar, Container } from "../atoms";
+import { ProgressBar, Container, HamburgerBtn } from "../atoms";
 import { useAppSelector } from "../../store/hooks";
 
 type handleProgressBar = () => number;
@@ -8,7 +8,7 @@ const Navbar = () => {
   const store = useAppSelector((store) => store.counter.value);
 
   const handleProgressBar: handleProgressBar = () => {
-    return store * 20;
+    return store * 25;
   };
 
   const handleTextHeader: handleTextHeader = () => {
@@ -17,7 +17,6 @@ const Navbar = () => {
       "Your body details",
       "Your BMI result",
       "Your ilness",
-      "Hospital docs",
       "Your result",
     ][store];
   };
@@ -26,7 +25,10 @@ const Navbar = () => {
     <nav className="h-18 w-full py-6">
       <Container className="flex items-center justify-between text-sm lg:text-base">
         <h1 className="font-bold">{handleTextHeader()}</h1>
-        <ProgressBar value={handleProgressBar()} />
+        <div className="flex items-center gap-4">
+          <ProgressBar value={handleProgressBar()} />
+          <HamburgerBtn />
+        </div>
       </Container>
     </nav>
   );

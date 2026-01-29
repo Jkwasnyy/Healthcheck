@@ -1,3 +1,4 @@
+
 fastapi
 pydantic
 uvicorn
@@ -5,3 +6,6 @@ pandas
 scikit-learn
 bcrypt
 python-dotenv
+email-validator
+PyJWT
+python-multipart
